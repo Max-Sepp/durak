@@ -90,5 +90,5 @@ def test_heuristic_games_finish(num_players):
 def test_heuristic_beats_random():
     stats = run_match([HeuristicAgent, RandomAgent], games=200, seed=0)
     for n, tally in stats.by_players.items():
-        _, hi = tally.interval()
-        assert hi < 1 / n, f"{n} players: durak rate {tally.durak_rate:.3f} not below {1 / n:.3f}"
+        lo, _ = tally.interval()
+        assert lo > 1 / n, f"{n} players: win rate {tally.win_rate:.3f} not above {1 / n:.3f}"

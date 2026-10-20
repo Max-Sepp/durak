@@ -9,15 +9,17 @@ export interface RoomSettings {
   trump_swap_enabled: boolean
   all_players_throw_in: boolean
   throw_in_after_take: boolean
+  first_out_wins: boolean
 }
 
-export type RuleKey = 'transfer_enabled' | 'trump_swap_enabled' | 'all_players_throw_in' | 'throw_in_after_take'
+export type RuleKey = 'transfer_enabled' | 'trump_swap_enabled' | 'all_players_throw_in' | 'throw_in_after_take' | 'first_out_wins'
 
 export const RULES: { key: RuleKey; label: string; description: string }[] = [
   { key: 'transfer_enabled', label: 'Transfer', description: 'Defender may pass the attack on with a card of the same rank' },
   { key: 'trump_swap_enabled', label: 'Trump swap', description: 'Lowest trump can be swapped for the face-up trump' },
   { key: 'all_players_throw_in', label: 'Everyone piles on', description: 'All players may throw in, not just the attacker' },
   { key: 'throw_in_after_take', label: 'Pile on after take', description: 'Cards can still be added once the defender takes' },
+  { key: 'first_out_wins', label: 'First out wins', description: 'The first player to get rid of all their cards wins' },
 ]
 
 export interface SeatTicket {
@@ -55,6 +57,7 @@ export interface PlayerView {
   passed: number[]
   out_order: number[]
   durak: number | null
+  winner: number | null
   discard_count: number
   bout_limit: number
   transfer_enabled: boolean

@@ -51,5 +51,5 @@ def test_search_beats_random():
     wins = 0
     for seed in range(20):
         result = play_game([SearchAgent(FAST, seed=seed), RandomAgent(seed=seed)], seed=seed)
-        wins += result.durak == 1
+        wins += result.winner == 0
     assert wins >= 18

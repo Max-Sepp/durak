@@ -43,14 +43,14 @@ def main(argv: Sequence[str] | None = None) -> None:
     stats = run_match([AGENTS[n] for n in names], args.games, args.seed, _parse_players(args.players))
 
     print(f"subject: {names[0]}  opponents: {','.join(names[1:]) or names[0]}")
-    print(f"{'players':>7}  {'games':>6}  {'durak':>6}  {'baseline':>8}  {'95% interval':<14}  {'draws':>5}  {'cut':>4}")
+    print(f"{'players':>7}  {'games':>6}  {'wins':>6}  {'baseline':>8}  {'95% interval':<14}  {'draws':>5}  {'cut':>4}")
     rows = [(str(n), t, 1 / n) for n, t in sorted(stats.by_players.items())]
     rows.append(("all", stats.total, None))
     for label, t, baseline in rows:
         lo, hi = t.interval()
         base = f"{baseline:8.3f}" if baseline is not None else " " * 8
         print(
-            f"{label:>7}  {t.games:>6}  {t.durak_rate:6.3f}  {base}  [{lo:.3f}, {hi:.3f}]  "
+            f"{label:>7}  {t.games:>6}  {t.win_rate:6.3f}  {base}  [{lo:.3f}, {hi:.3f}]  "
             f"{t.draws:>5}  {t.truncated:>4}"
         )
 

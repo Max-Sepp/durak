@@ -15,6 +15,8 @@ class GameConfig:
     all_players_throw_in: bool = True
     # Attackers may keep adding cards after the defender declares "take".
     throw_in_after_take: bool = True
+    # The first player to get rid of all their cards wins and the game ends there.
+    first_out_wins: bool = True
     hand_size: int = 6
     max_bout_cards: int = 6
     first_bout_limit: int = 5

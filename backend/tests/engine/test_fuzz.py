@@ -6,7 +6,7 @@ import pytest
 from durak_engine import Game, GameConfig, Phase
 
 TABLES = list(itertools.product(range(2, 7), (36, 52)))
-RULES = ("transfer_enabled", "trump_swap_enabled", "all_players_throw_in", "throw_in_after_take")
+RULES = ("transfer_enabled", "trump_swap_enabled", "all_players_throw_in", "throw_in_after_take", "first_out_wins")
 
 
 def total_cards(game: Game) -> int:
@@ -40,4 +40,8 @@ def test_random_playouts_terminate_and_conserve_cards(num_players: int, deck_siz
             assert s.attacker != s.defender or game.finished
             assert sum(p.defense is None for p in s.table) <= len(s.hands[s.defender]) or s.phase is Phase.DEFENDER_TAKING
         assert game.finished, f"seed {seed} ({flags}) did not finish"
-        assert len(game.state.out_order) >= num_players - 1
+        if config.first_out_wins:
+            assert game.state.out_order and game.state.durak is None
+            assert game.state.winner == (game.state.out_order[0] if len(game.state.out_order) == 1 else None)
+        else:
+            assert len(game.state.out_order) >= num_players - 1

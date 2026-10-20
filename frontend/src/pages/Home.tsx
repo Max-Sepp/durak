@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { createRoom, joinRoom, saveTicket } from '@/lib/api'
-import { RULES, type RuleKey, type SeatTicket } from '@/lib/types'
+import { RULES, type RoomSettings, type RuleKey, type SeatTicket } from '@/lib/types'
 
 const NAME_KEY = 'durak:name'
 const DEFAULT_NAME = 'Ada'
@@ -46,6 +46,7 @@ export function Home({ initialCode, onEnter }: { initialCode: string; onEnter: (
     trump_swap_enabled: true,
     all_players_throw_in: true,
     throw_in_after_take: true,
+    first_out_wins: true,
   })
   const [busy, setBusy] = useState(false)
 
@@ -67,14 +68,11 @@ export function Home({ initialCode, onEnter }: { initialCode: string; onEnter: (
     }
   }
 
+  const settings: RoomSettings = { deck_size: Number(deckSize) as 36 | 52, ...rules }
+
   const onCreate = (e: FormEvent) => {
     e.preventDefault()
-    enter(() =>
-      createRoom(name.trim(), {
-        deck_size: Number(deckSize) as 36 | 52,
-        ...rules,
-      }),
-    )
+    enter(() => createRoom(name.trim(), settings))
   }
 
   const onJoin = (e: FormEvent) => {
@@ -163,7 +161,7 @@ export function Home({ initialCode, onEnter }: { initialCode: string; onEnter: (
         </CardContent>
       </Card>
 
-      <Rules />
+      <Rules settings={settings} />
     </AppShell>
   )
 }

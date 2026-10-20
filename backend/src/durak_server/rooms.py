@@ -87,6 +87,7 @@ class Room:
             trump_swap_enabled=self.settings.trump_swap_enabled,
             all_players_throw_in=self.settings.all_players_throw_in,
             throw_in_after_take=self.settings.throw_in_after_take,
+            first_out_wins=self.settings.first_out_wins,
         )
         self.game = Game.new(config)
         self.last_events = []

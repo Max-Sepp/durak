@@ -12,6 +12,7 @@ class RoomSettings(BaseModel):
     trump_swap_enabled: bool = True
     all_players_throw_in: bool = True
     throw_in_after_take: bool = True
+    first_out_wins: bool = True
 
 
 def _clean_name(name: str) -> str:

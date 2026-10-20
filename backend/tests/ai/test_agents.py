@@ -9,8 +9,8 @@ from durak_engine import Attack
 def test_random_agents_finish_games(num_players):
     for seed in range(30):
         result = play_game([RandomAgent(seed=seed * 10 + i) for i in range(num_players)], seed=seed)
-        assert len(result.out_order) >= num_players - 1
-        assert result.durak is None or result.durak not in result.out_order
+        assert result.out_order and not result.truncated
+        assert result.winner is None or result.out_order == [result.winner]
 
 
 def test_play_game_is_reproducible():
@@ -44,7 +44,7 @@ def test_run_match_rotates_seats_and_counts():
     assert stats.total.games == 50
     for tally in stats.by_players.values():
         lo, hi = tally.interval()
-        assert 0 <= lo <= tally.durak_rate <= hi <= 1
+        assert 0 <= lo <= tally.win_rate <= hi <= 1
 
 
 def test_cli_runs(capsys):

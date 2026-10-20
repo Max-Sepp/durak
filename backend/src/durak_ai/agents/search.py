@@ -122,6 +122,7 @@ class SearchAgent(Agent):
             passed=set(view.passed),
             out_order=list(view.out_order),
             durak=view.durak,
+            winner=view.winner,
             is_first_bout=self.tracker.first_bout,
         )
         return Game(state)
@@ -143,6 +144,6 @@ class SearchAgent(Agent):
             game.apply(self.seat, candidate)
         for _ in range(self.params.max_rollout_steps):
             if game.finished:
-                return outcome_reward(game.state.durak, self.seat, players)
+                return outcome_reward(game.state.winner, self.seat, players)
             game.apply(*next_move(game, agents, self.rng))
         return 0.0

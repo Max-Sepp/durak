@@ -33,6 +33,7 @@ class PlayerView:
     passed: list[int]
     out_order: list[int]
     durak: int | None
+    winner: int | None
     discard_count: int
     bout_limit: int
     transfer_enabled: bool
@@ -54,6 +55,7 @@ class PlayerView:
             "passed": self.passed,
             "out_order": self.out_order,
             "durak": self.durak,
+            "winner": self.winner,
             "discard_count": self.discard_count,
             "bout_limit": self.bout_limit,
             "transfer_enabled": self.transfer_enabled,

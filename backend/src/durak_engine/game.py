@@ -124,6 +124,7 @@ class Game:
             passed=sorted(s.passed),
             out_order=list(s.out_order),
             durak=s.durak,
+            winner=s.winner,
             discard_count=len(s.discard),
             bout_limit=s.bout_limit,
             transfer_enabled=s.config.transfer_enabled,
@@ -272,6 +273,13 @@ class Game:
 
         events.extend(self._draw_cards())
         events.extend(self._eliminate_finished())
+
+        if s.config.first_out_wins and s.out_order:
+            # Several players emptying their hands in the same bout is a draw.
+            s.phase = Phase.FINISHED
+            s.winner = s.out_order[0] if len(s.out_order) == 1 else None
+            events.append(Event("game_won", s.winner))
+            return events
 
         active = self.active_players()
         if len(active) <= 1:

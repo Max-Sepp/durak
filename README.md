@@ -77,9 +77,11 @@ Optional rules are set per room and in `GameConfig`. All of them are on by defau
 | Trump swap | `trump_swap_enabled` | No swapping |
 | Everyone piles on | `all_players_throw_in` | Only the main attacker may throw in |
 | Pile on after take | `throw_in_after_take` | Defender picks up immediately |
+| First out wins | `first_out_wins` | Play continues until one player (the durak) is left |
 
 - Transfer: before any defence, the defender may add a card of the same rank to pass the attack to the next player, provided that player holds enough cards.
 - Whoever holds the lowest trump (the 2 with 52 cards, the 6 with 36) may swap it for the face-up trump card under the deck at any time, until that card is drawn.
 - After a take, attackers may still throw in up to the limit if "pile on after take" is on. The defender then picks everything up and loses their turn to attack.
 - Hands are refilled to 6: main attacker first, defender last. The face-up trump card is drawn last.
-- Once the deck is empty, players with no cards are out. The last player holding cards is the durak; if nobody is, it's a draw.
+- Once the deck is empty, players with no cards are out. With "first out wins" off, the last player holding cards is the durak; if nobody is, it's a draw.
+- First out wins: the game ends at the end of the first bout after which someone is out. That player is the `winner` (and there is no durak); if several went out in that bout, it's a draw.

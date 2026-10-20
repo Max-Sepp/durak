@@ -219,7 +219,7 @@ def test_draw_order_attacker_first_defender_last():
 
 
 def test_game_ends_with_durak():
-    game = make_game([["7H"], ["9C", "10C"]], trump="6S")
+    game = make_game([["7H"], ["9C", "10C"]], trump="6S", first_out_wins=False)
     game.apply(0, Attack(c("7H")))
     game.apply(1, Take())
     s = game.state
@@ -229,13 +229,42 @@ def test_game_ends_with_durak():
 
 
 def test_game_ends_in_draw():
-    game = make_game([["7H"], ["9H"]], trump="6S")
+    game = make_game([["7H"], ["9H"]], trump="6S", first_out_wins=False)
     game.apply(0, Attack(c("7H")))
     game.apply(1, Defend(0, c("9H")))
     s = game.state
     assert s.phase is Phase.FINISHED
     assert s.durak is None
     assert sorted(s.out_order) == [0, 1]
+
+
+def test_first_out_wins_ends_game_when_first_player_empties_hand():
+    game = make_game([["7H"], ["9H", "10C"], ["AD", "KD"]], trump="6S", first_out_wins=True)
+    game.apply(0, Attack(c("7H")))
+    game.apply(1, Defend(0, c("9H")))
+    s = game.state
+    assert s.phase is Phase.FINISHED
+    assert s.winner == 0
+    assert s.durak is None
+    assert game.view(2).winner == 0
+
+
+def test_first_out_wins_draw_when_several_empty_together():
+    game = make_game([["7H"], ["9H"], ["AD", "KD"]], trump="6S", first_out_wins=True)
+    game.apply(0, Attack(c("7H")))
+    game.apply(1, Defend(0, c("9H")))
+    s = game.state
+    assert s.phase is Phase.FINISHED
+    assert s.winner is None
+    assert sorted(s.out_order) == [0, 1]
+
+
+def test_first_out_wins_waits_for_empty_deck():
+    game = make_game([["7H"], ["9H", "10C"], ["AD", "KD"]], talon=["6S", "8C"], first_out_wins=True)
+    game.apply(0, Attack(c("7H")))
+    game.apply(1, Defend(0, c("9H")))
+    assert not game.finished
+    assert sorted(game.state.hands[0]) == sorted([c("8C"), c("6S")])
 
 
 def test_lowest_trump_swaps_for_face_up_trump():

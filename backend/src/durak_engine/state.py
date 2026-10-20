@@ -36,6 +36,7 @@ class GameState:
     passed: set[int] = field(default_factory=set)
     out_order: list[int] = field(default_factory=list)
     durak: int | None = None
+    winner: int | None = None  # only set with `first_out_wins`
     is_first_bout: bool = True
 
     @property

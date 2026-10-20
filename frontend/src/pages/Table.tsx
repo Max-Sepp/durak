@@ -146,13 +146,23 @@ export function Table({ room, game, onAction, onRematch, onLeave }: TableProps) 
 
       {finished ? (
         <section className="flex flex-col items-center gap-3 py-2">
-          <p className={cn('text-2xl font-bold', view.durak === me ? 'text-ctp-red' : 'text-ctp-green')}>
-            {view.durak === null
-              ? "It's a draw!"
-              : view.durak === me
-                ? 'You are the durak!'
-                : `${names[view.durak]} is the durak!`}
-          </p>
+          {room.settings.first_out_wins ? (
+            <p className={cn('text-2xl font-bold', view.winner === me ? 'text-ctp-green' : 'text-ctp-red')}>
+              {view.winner === null
+                ? "It's a draw!"
+                : view.winner === me
+                  ? 'You win!'
+                  : `${names[view.winner]} wins!`}
+            </p>
+          ) : (
+            <p className={cn('text-2xl font-bold', view.durak === me ? 'text-ctp-red' : 'text-ctp-green')}>
+              {view.durak === null
+                ? "It's a draw!"
+                : view.durak === me
+                  ? 'You are the durak!'
+                  : `${names[view.durak]} is the durak!`}
+            </p>
+          )}
           <Button size="lg" onClick={onRematch}>
             Play again
           </Button>
@@ -190,7 +200,7 @@ export function Table({ room, game, onAction, onRematch, onLeave }: TableProps) 
       <section className="rounded-2xl bg-card px-2 pt-3 pb-4 ring-1 ring-foreground/10">
         <div className="mb-2 flex items-center justify-center gap-2 text-sm">
           <span className="font-medium">{names[me]} (you)</span>
-          <RoleBadges seat={me} game={game} />
+          <RoleBadges seat={me} room={room} game={game} />
         </div>
         <div className="flex justify-center overflow-x-auto px-2 pt-3 pb-1">
           <div className="flex gap-1 sm:gap-2">
@@ -232,13 +242,17 @@ function SeatPanel({ seat, room, game }: { seat: number; room: RoomInfo; game: G
         ))}
         <span className="ml-2 text-sm">{count}</span>
       </div>
-      <RoleBadges seat={seat} game={game} />
+      <RoleBadges seat={seat} room={room} game={game} />
     </div>
   )
 }
 
-function RoleBadges({ seat, game }: { seat: number; game: GameSnapshot }) {
+function RoleBadges({ seat, room, game }: { seat: number; room: RoomInfo; game: GameSnapshot }) {
   const { view } = game
+  if (view.phase === 'finished' && room.settings.first_out_wins) {
+    if (view.winner === seat) return <Badge>Winner</Badge>
+    return view.out_order.includes(seat) ? <Badge>Draw</Badge> : null
+  }
   if (view.phase === 'finished') {
     return view.durak === seat ? <Badge variant="destructive">Durak</Badge> : <Badge>Safe</Badge>
   }
@@ -293,6 +307,8 @@ function describeEvents(events: GameEvent[], names: string[]) {
           return `${who(e.player)} is out`
         case 'game_over':
           return e.player === null ? 'Draw' : `${who(e.player)} is the durak`
+        case 'game_won':
+          return e.player === null ? 'Draw' : `${who(e.player)} wins`
         default:
           return null
       }

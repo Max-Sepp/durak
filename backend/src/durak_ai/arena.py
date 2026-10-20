@@ -19,7 +19,7 @@ class AgentError(Exception):
 
 @dataclass(frozen=True)
 class GameResult:
-    durak: int | None
+    winner: int | None
     out_order: list[int]
     steps: int
     agents: list[str]
@@ -49,7 +49,7 @@ def play_game(
 
     s = game.state
     return GameResult(
-        durak=s.durak,
+        winner=s.winner,
         out_order=list(s.out_order),
         steps=steps,
         agents=[a.name for a in agents],
@@ -83,19 +83,19 @@ def next_move(
 @dataclass
 class Tally:
     games: int = 0
-    durak: int = 0
+    wins: int = 0
     draws: int = 0
     truncated: int = 0
 
     @property
-    def durak_rate(self) -> float:
-        return self.durak / self.games if self.games else 0.0
+    def win_rate(self) -> float:
+        return self.wins / self.games if self.games else 0.0
 
     def interval(self, z: float = 1.96) -> tuple[float, float]:
-        """Wilson score interval for the durak rate."""
+        """Wilson score interval for the win rate."""
         if not self.games:
             return 0.0, 1.0
-        n, p = self.games, self.durak_rate
+        n, p = self.games, self.win_rate
         centre = (p + z * z / (2 * n)) / (1 + z * z / n)
         spread = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
         return centre - spread, centre + spread
@@ -103,7 +103,7 @@ class Tally:
 
 @dataclass
 class MatchStats:
-    """How often the subject (the first agent) ends up durak, per player count."""
+    """How often the subject (the first agent) wins, per player count."""
 
     by_players: dict[int, Tally] = field(default_factory=dict)
 
@@ -112,7 +112,7 @@ class MatchStats:
         out = Tally()
         for t in self.by_players.values():
             out.games += t.games
-            out.durak += t.durak
+            out.wins += t.wins
             out.draws += t.draws
             out.truncated += t.truncated
         return out
@@ -120,11 +120,11 @@ class MatchStats:
     def record(self, num_players: int, subject_seat: int, result: GameResult) -> None:
         tally = self.by_players.setdefault(num_players, Tally())
         tally.games += 1
-        if result.durak is None:
+        if result.winner is None:
             tally.draws += 1
             tally.truncated += result.truncated
-        elif result.durak == subject_seat:
-            tally.durak += 1
+        elif result.winner == subject_seat:
+            tally.wins += 1
 
 
 AgentFactory = Callable[[], Agent]
