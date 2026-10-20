@@ -250,8 +250,7 @@ function SeatPanel({ seat, room, game }: { seat: number; room: RoomInfo; game: G
 function RoleBadges({ seat, room, game }: { seat: number; room: RoomInfo; game: GameSnapshot }) {
   const { view } = game
   if (view.phase === 'finished' && room.settings.first_out_wins) {
-    if (view.winner === seat) return <Badge>Winner</Badge>
-    return view.out_order.includes(seat) ? <Badge>Draw</Badge> : null
+    return view.winner === seat ? <Badge>Winner</Badge> : null
   }
   if (view.phase === 'finished') {
     return view.durak === seat ? <Badge variant="destructive">Durak</Badge> : <Badge>Safe</Badge>

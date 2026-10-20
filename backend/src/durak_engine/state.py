@@ -37,6 +37,7 @@ class GameState:
     out_order: list[int] = field(default_factory=list)
     durak: int | None = None
     winner: int | None = None  # only set with `first_out_wins`
+    emptied: list[int] = field(default_factory=list)  # ran out of cards this bout, in order
     is_first_bout: bool = True
 
     @property

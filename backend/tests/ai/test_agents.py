@@ -10,7 +10,7 @@ def test_random_agents_finish_games(num_players):
     for seed in range(30):
         result = play_game([RandomAgent(seed=seed * 10 + i) for i in range(num_players)], seed=seed)
         assert result.out_order and not result.truncated
-        assert result.winner is None or result.out_order == [result.winner]
+        assert result.winner is not None and result.out_order == [result.winner]
 
 
 def test_play_game_is_reproducible():

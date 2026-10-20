@@ -238,25 +238,35 @@ def test_game_ends_in_draw():
     assert sorted(s.out_order) == [0, 1]
 
 
-def test_first_out_wins_ends_game_when_first_player_empties_hand():
+def test_first_out_wins_ends_game_as_soon_as_a_hand_empties():
     game = make_game([["7H"], ["9H", "10C"], ["AD", "KD"]], trump="6S", first_out_wins=True)
     game.apply(0, Attack(c("7H")))
-    game.apply(1, Defend(0, c("9H")))
     s = game.state
     assert s.phase is Phase.FINISHED
-    assert s.winner == 0
+    assert s.winner == 0 and s.out_order == [0]
     assert s.durak is None
     assert game.view(2).winner == 0
 
 
-def test_first_out_wins_draw_when_several_empty_together():
-    game = make_game([["7H"], ["9H"], ["AD", "KD"]], trump="6S", first_out_wins=True)
+def test_first_out_wins_defender_can_win_mid_bout():
+    game = make_game([["7H", "8C"], ["9H"], ["AD", "KD"]], trump="6S", first_out_wins=True)
     game.apply(0, Attack(c("7H")))
     game.apply(1, Defend(0, c("9H")))
+    assert game.state.winner == 1
+
+
+def test_first_out_wins_goes_to_first_hand_emptied_when_deck_runs_out():
+    # The last card in the deck refills the attacker; seat 2 emptied their hand
+    # before the defender did, so seat 2 wins rather than it being a draw.
+    game = make_game([["7H"], ["9H", "8C"], ["7C"]], talon=["6S"], first_out_wins=True)
+    game.apply(0, Attack(c("7H")))
+    game.apply(2, Attack(c("7C")))
+    game.apply(1, Defend(0, c("9H")))
+    game.apply(1, Defend(1, c("8C")))
     s = game.state
     assert s.phase is Phase.FINISHED
-    assert s.winner is None
-    assert sorted(s.out_order) == [0, 1]
+    assert s.winner == 2
+    assert s.hands[0] == [c("6S")]
 
 
 def test_first_out_wins_waits_for_empty_deck():

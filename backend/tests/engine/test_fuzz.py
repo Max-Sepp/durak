@@ -42,6 +42,6 @@ def test_random_playouts_terminate_and_conserve_cards(num_players: int, deck_siz
         assert game.finished, f"seed {seed} ({flags}) did not finish"
         if config.first_out_wins:
             assert game.state.out_order and game.state.durak is None
-            assert game.state.winner == (game.state.out_order[0] if len(game.state.out_order) == 1 else None)
+            assert game.state.winner is not None and game.state.out_order == [game.state.winner]
         else:
             assert len(game.state.out_order) >= num_players - 1

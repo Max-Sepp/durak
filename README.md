@@ -84,4 +84,4 @@ Optional rules are set per room and in `GameConfig`. All of them are on by defau
 - After a take, attackers may still throw in up to the limit if "pile on after take" is on. The defender then picks everything up and loses their turn to attack.
 - Hands are refilled to 6: main attacker first, defender last. The face-up trump card is drawn last.
 - Once the deck is empty, players with no cards are out. With "first out wins" off, the last player holding cards is the durak; if nobody is, it's a draw.
-- First out wins: the game ends at the end of the first bout after which someone is out. That player is the `winner` (and there is no durak); if several went out in that bout, it's a draw.
+- First out wins: once the deck is empty, the game ends the moment a player plays their last card, and that player is the `winner` (there is no durak). If several players emptied their hands during a bout while the deck still had cards and drawing doesn't refill them, whoever emptied their hand first wins, so there are no draws.

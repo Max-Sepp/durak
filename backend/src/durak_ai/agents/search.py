@@ -123,6 +123,8 @@ class SearchAgent(Agent):
             out_order=list(view.out_order),
             durak=view.durak,
             winner=view.winner,
+            # The view doesn't say who ran out first this bout; seat order will do.
+            emptied=[p for p, n in enumerate(view.hand_counts) if n == 0 and p not in view.out_order],
             is_first_bout=self.tracker.first_bout,
         )
         return Game(state)

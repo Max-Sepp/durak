@@ -173,6 +173,12 @@ class Game:
                 )
                 s.talon[0] = s.trump_card = low
 
+        if not s.hands[player] and player not in s.emptied:
+            s.emptied.append(player)
+            # Nothing left to draw, so this player is the first out.
+            if s.config.first_out_wins and not s.talon:
+                return events + self._declare_winner(player)
+
         events.extend(self._maybe_end_bout())
         return events
 
@@ -272,14 +278,15 @@ class Game:
         s.is_first_bout = False
 
         events.extend(self._draw_cards())
-        events.extend(self._eliminate_finished())
+        if s.config.first_out_wins and not s.talon:
+            # The deck ran out before refilling everyone who emptied their hand
+            # this bout; whoever got their cards down first wins.
+            empty = [p for p in s.emptied if not s.hands[p]]
+            if empty:
+                return events + self._declare_winner(empty[0])
+        s.emptied.clear()
 
-        if s.config.first_out_wins and s.out_order:
-            # Several players emptying their hands in the same bout is a draw.
-            s.phase = Phase.FINISHED
-            s.winner = s.out_order[0] if len(s.out_order) == 1 else None
-            events.append(Event("game_won", s.winner))
-            return events
+        events.extend(self._eliminate_finished())
 
         active = self.active_players()
         if len(active) <= 1:
@@ -315,6 +322,13 @@ class Game:
             if drawn:
                 events.append(Event("draw", p, {"count": drawn}))
         return events
+
+    def _declare_winner(self, player: int) -> list[Event]:
+        s = self.state
+        s.out_order.append(player)
+        s.phase = Phase.FINISHED
+        s.winner = player
+        return [Event("player_out", player), Event("game_won", player)]
 
     def _eliminate_finished(self) -> list[Event]:
         s = self.state

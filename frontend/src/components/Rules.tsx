@@ -83,8 +83,11 @@ export function Rules({ settings }: { settings: RoomSettings }) {
         <Section title="Winning">
           {settings.first_out_wins ? (
             <>
-              <li>Once the deck is empty, the first player to run out of cards wins and the game ends.</li>
-              <li>If several players run out in the same bout, it's a draw.</li>
+              <li>Once the deck is empty, the first player to get all their cards down wins and the game ends.</li>
+              <li>
+                If several players run out in the same bout and the deck can't refill them, whoever got their
+                last card down first wins.
+              </li>
             </>
           ) : (
             <>
