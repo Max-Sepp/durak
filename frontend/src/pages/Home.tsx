@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { AppShell } from '@/components/AppShell'
+import { Rules } from '@/components/Rules'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -161,6 +162,8 @@ export function Home({ initialCode, onEnter }: { initialCode: string; onEnter: (
           </form>
         </CardContent>
       </Card>
+
+      <Rules />
     </AppShell>
   )
 }
