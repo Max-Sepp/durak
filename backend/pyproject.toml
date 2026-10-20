@@ -8,6 +8,22 @@ dependencies = [
     "uvicorn[standard]>=0.30",
 ]
 
+[project.optional-dependencies]
+# Neural-network AI (durak_ai.nn). Install with `uv sync --extra nn`.
+nn = [
+    "torch>=2.13",
+    "numpy>=2",
+]
+
+[tool.uv.sources]
+# CUDA 13.2 builds of PyTorch; the default PyPI wheel doesn't target this GPU stack.
+torch = [{ index = "pytorch-cu132", extra = "nn" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
+
 [dependency-groups]
 dev = [
     "pytest>=8",
